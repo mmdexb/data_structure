@@ -61,3 +61,46 @@ Status GetElem(SqList *L,int i,ElemType *e){ //传入的i是逻辑上的位置�
     return OK;
 
 }
+
+//顺序表的查找
+int LocateElem(SqList *L ,ElemType *e){
+    for(int i=0;i<L->length;i++){
+        if(L->elem==e){
+            return i+1;
+        }
+    }
+    return 0;
+}
+
+//顺序表的插入
+Status ListInsert(SqList *L,int i,ElemType e){
+    if(i<1||i>L->length+1){  //i的值不合法
+        return ERROR;
+    }
+    if(L->length==LIST_INIT_SIZE){ //顺序表已经满了
+        return ERROR;
+    }
+    for(int j=L->length-1;j>i-1;j--){   //在存储单元中的下标都是比逻辑的位置小1
+        L->elem[j+1]=L->elem[j];        //j则被初始化为最后一个元素的存储位置
+                                        //直到要插入的逻辑位置的存储位置
+        
+    }
+    L->elem[i-1]=e;
+    L->length++;
+    return OK;
+}
+
+//顺序表删除
+Status ListDelete_Sq(SqList *L,int i){
+    if(i<1||i>L->length){
+        return ERROR;
+    }
+    for(int j=i;j<=L->length;j++){ //初始化为j表示在存储单元中要删除的逻辑位置的数据元素的前一个
+                                   //直到表中第一个存储单元中空白的元素
+                                   //逐个向前覆盖
+        L->elem[j-1]=L->elem[j];
+    }
+    L->length--;
+    return OK;
+
+}
