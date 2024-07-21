@@ -163,3 +163,54 @@ void CreateList_R(LinkList L,int n){
         r=p; //更新最新的表尾
     }
 }
+
+LinkList Connect(LinkList Ta,LinkList Tb){
+    LinkList p=Ta->next; //p暂存为Ta的头节点
+    Ta->next=Tb->next->next; //将Ta的的尾节点连接到Tb的第一个具有数值的节点（头节点的下一个）
+    free(Tb->next);//释放Tb的头节点
+    Tb->next=p;//将Tb的尾节点连接到Ta的头节点
+    return Tb;
+}
+
+typedef struct DuLNode{
+    ElemType data;
+    struct DuLNode *prior,*next;
+}DuLNode,*DuLinkList;
+
+DuLinkList GetElem_DuL(DuLinkList L,int i){
+    DuLinkList p=L;
+    int j=0;
+    while (p->next!=NULL&&j<i+1)
+    {
+        p=p->next;
+        j++;
+    }
+    return p;
+}
+
+void ListInsert_DuL(DuLinkList L,int i,ElemType e){
+    DuLinkList p=GetElem_DuL(L,i);
+    if(p==NULL){
+        return ERROR;
+    }
+    DuLinkList s=(DuLinkList)malloc(sizeof(DuLNode));
+    s->data=e;
+    s->prior=p->prior; //将要插入的节点的前驱节点改为原节点的前驱节点
+    p->prior->next=s; //将原节点的前驱节点的后驱节点改为要插入的节点
+    s->next=p; //要插入的节点后驱节点改为原节点
+    p->prior=s; //原节点的前驱节点改为要插入的节点
+
+    return OK;
+}
+
+void ListDelete_DuL(DuLinkList L,int i,ElemType *e){
+    DuLinkList p=GetElem_DuL(L,i);
+    if(p==NULL){
+        return ERROR;
+    }
+    e=p->data;
+    p->prior->next=p->next;
+    p->next->prior=p->prior;
+    free(p);
+    return OK;
+}
