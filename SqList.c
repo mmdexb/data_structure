@@ -104,3 +104,42 @@ Status ListDelete_Sq(SqList *L,int i){
     return OK;
 
 }
+
+void unionList(SqList *La,SqList *Lb){
+    int La_lenth=GetLength(La);
+    int Lb_lenth=GetLength(Lb);
+
+    for(int i=0;i<Lb_lenth;i++){
+        ElemType e;
+        GetElem(Lb,i,e);
+        if(LocateElem(La,e)!=0){
+            ListInsert(La,La_lenth+1,e);
+        }
+    }
+}
+
+void MergeList_Sq(SqList *La,SqList *Lb,SqList *Lc){
+    ElemType *pa =La->elem;
+    ElemType *pb =Lb->elem;
+    Lc->length=Lb->length+Lc->length;
+    Lc->elem=(ElemType *)malloc(Lc->length * sizeof(ElemType)); 
+    ElemType *pc=Lc->elem;
+    ElemType *pa_last=La->elem+La->length-1;//pa_last 指向La的最后一个元素 地址=基地址+偏移量-1
+    ElemType *pb_last=La->elem+La->length-1;
+
+    while(pa<=pa_last && pb<=pb_last){//两个表都非空
+        if(*pa<=*pb){
+            *(pc++)=*(pa++);
+        }else{
+            *(pc++)=*(pb++);
+        } 
+    }
+
+    while(pa<pa_last){ //看看La还有没有剩余，有剩余直接添加
+        *(pc++)=*(pa++);
+    }
+    while(pb<pb_last){
+        *(pc++)=*(pb++);
+    }
+
+}

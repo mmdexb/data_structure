@@ -18,7 +18,7 @@ typedef struct LNode
 
 // 初始化
 Status initList(LinkList L){
-    L=(LinkList)malloc(sizeof(LNode));
+    L=(LinkList*)malloc(sizeof(LNode));
     L->next=NULL;
     return OK;
 }
@@ -138,7 +138,7 @@ Status ListDelete(LinkList L,int i,ElemType *e){
 
 //头插法
 void CreateList_H(LinkList L,int n){
-    L=(LinkList)malloc(sizeof(LNode));
+    L=(LinkList*)malloc(sizeof(LNode));
     L->next=NULL;
     for(int i=0;i<n;i++){
         LinkList p=(LinkList)malloc(sizeof(LNode));
@@ -152,7 +152,7 @@ void CreateList_H(LinkList L,int n){
 
 //尾插法
 void CreateList_R(LinkList L,int n){
-    L=(LinkList)malloc(sizeof(LNode));
+    L=(LinkList*)malloc(sizeof(LNode));
     L->next=NULL;
     LinkList r=L;
     for(int i=0;i<n;i++){
@@ -213,4 +213,35 @@ void ListDelete_DuL(DuLinkList L,int i,ElemType *e){
     p->next->prior=p->prior;
     free(p);
     return OK;
+}
+
+void Merge_LinkedList(LinkList *La, LinkList *Lb, LinkList *Lc)
+{
+    *Lc = *La;                                   // 让Lc使用La的头节点进行合并
+    LinkList pa = (*La)->next, pb = (*Lb)->next; // pa, pb分别表示合并时所指节点
+    LinkList pc = *Lc;                           // pc表示Lc的尾节点
+    while (pa && pb)
+    {
+        if (pa->data < pb->data)
+        {
+            pc->next = pa;
+            pc = pa;
+            pa = pa->next;
+        }
+        else
+        {
+            pc->next = pb;
+            pc = pb;
+            pb = pb->next;
+        }
+    }
+    if(pa!=NULL){
+        pc->next=pa;
+    }else{
+        pc->next=pb;
+    }
+
+    // pc->next不需要NULL,因为合并时一定会剩下一串节点，只需指向该剩下的节点就OK
+    free(*Lb);
+    *La = *Lb = NULL;
 }
